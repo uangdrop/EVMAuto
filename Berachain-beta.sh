@@ -87,7 +87,7 @@ deploy_erc20() {
   mkdir -p winsnip
   cat <<EOF > foundry.toml
 [rpc_endpoints]
-berachain = "https://bartio.rpc.berachain.com/"
+berachain = "https://bera-testnet.nodeinfra.com/"
 EOF
 
   if [ ! -d "./openzeppelin" ]; then
@@ -141,7 +141,7 @@ contract $CONTRACT_NAME is ERC20, ERC20Burnable, ERC20Pausable, Ownable, ERC20Pe
 EOF
 
   show "Deploying ERC20 contract..." "progress"
-  DEPLOY_CMD="forge create winsnip/$CONTRACT_NAME.sol:$CONTRACT_NAME --constructor-args $YOUR_ADDRESS --rpc-url berachain --private-key $YOUR_PRIVATE_KEY"
+  DEPLOY_CMD="forge create winsnip/$CONTRACT_NAME.sol:$CONTRACT_NAME --constructor-args $YOUR_ADDRESS --rpc-url https://bera-testnet.nodeinfra.com --private-key $YOUR_PRIVATE_KEY"
   eval $DEPLOY_CMD
 
   read -p "Deployed ERC20 contract address: " CONTRACT_ADDRESS
@@ -167,7 +167,7 @@ EOF
 
       AMOUNT_WEI=$((AMOUNT_TO_SEND * 10 ** 18))
 
-      SEND_CMD="cast send \"$CONTRACT_ADDRESS\" \"transfer(address,uint256)\" \"$RANDOM_ADDRESS\" \"$AMOUNT_WEI\" --rpc-url berachain --private-key \"$YOUR_PRIVATE_KEY\""
+      SEND_CMD="cast send \"$CONTRACT_ADDRESS\" \"transfer(address,uint256)\" \"$RANDOM_ADDRESS\" \"$AMOUNT_WEI\" --rpc-url https://bera-testnet.nodeinfra.com --private-key \"$YOUR_PRIVATE_KEY\""
       echo "Executing command: $SEND_CMD"
 
       if ! eval "$SEND_CMD"; then
@@ -192,7 +192,7 @@ deploy_nft() {
 
   cat <<EOF > foundry.toml
 [rpc_endpoints]
-berachain = "https://bartio.rpc.berachain.com/"
+berachain = "https://bera-testnet.nodeinfra.com"
 EOF
 
   cat <<EOF > winsnip/MyNFT.sol
@@ -219,7 +219,7 @@ contract MyNFT is ERC721URIStorage, Ownable {
 EOF
 
   show "Deploying NFT contract..." "progress"
-  DEPLOY_CMD="forge create winsnip/MyNFT.sol:MyNFT --rpc-url https://bartio.rpc.berachain.com/ --private-key $YOUR_PRIVATE_KEY --constructor-args $OWNER_ADDRESS"
+  DEPLOY_CMD="forge create winsnip/MyNFT.sol:MyNFT --rpc-url https://bera-testnet.nodeinfra.com --private-key $YOUR_PRIVATE_KEY --constructor-args $OWNER_ADDRESS"
   eval $DEPLOY_CMD
 
   read -p "Enter deployed NFT contract address: " NFT_CONTRACT_ADDRESS
@@ -234,17 +234,17 @@ EOF
 
     for ((i=0; i<OWNER_MINT_COUNT; i++)); do
         TOKEN_URI="${BASE_URI}+${i}"
-        MINT_CMD="cast send \"$NFT_CONTRACT_ADDRESS\" \"safeMint(address,string)\" \"$OWNER_ADDRESS\" \"$TOKEN_URI\" --rpc-url https://bartio.rpc.berachain.com/ --private-key \"$YOUR_PRIVATE_KEY\""
+        MINT_CMD="cast send \"$NFT_CONTRACT_ADDRESS\" \"safeMint(address,string)\" \"$OWNER_ADDRESS\" \"$TOKEN_URI\" --rpc-url https://bera-testnet.nodeinfra.com --private-key \"$YOUR_PRIVATE_KEY\""
         eval $MINT_CMD
     done
 
     for ((i=0; i<RANDOM_MINT_COUNT; i++)); do
         TOKEN_URI="${BASE_URI}+$(($OWNER_MINT_COUNT + i))"
         RANDOM_ADDRESS=$(openssl rand -hex 20)
-        MINT_CMD="cast send \"$NFT_CONTRACT_ADDRESS\" \"safeMint(address,string)\" \"$RANDOM_ADDRESS\" \"$TOKEN_URI\" --rpc-url https://bartio.rpc.berachain.com/ --private-key \"$YOUR_PRIVATE_KEY\""
+        MINT_CMD="cast send \"$NFT_CONTRACT_ADDRESS\" \"safeMint(address,string)\" \"$RANDOM_ADDRESS\" \"$TOKEN_URI\" --rpc-url https://bera-testnet.nodeinfra.com --private-key \"$YOUR_PRIVATE_KEY\""
         eval $MINT_CMD
     done
-  show "NFT contract can be viewed at: https://bartio.rpc.berachain.com/$NFT_CONTRACT_ADDRESS" "done"
+  show "NFT contract can be viewed at: https://bartio.beratrail.io/$NFT_CONTRACT_ADDRESS" "done"
   show "All NFTs minted successfully." "done"
 }
 
